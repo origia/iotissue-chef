@@ -1,0 +1,18 @@
+server {
+  server_name   <%= @server_name %>;
+  listen   <%= @port || 80 %>;
+
+  root <%= @appdir %>;
+  try_files $uri @iotissue_nginx;
+
+  location @iotissue_nginx {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto http;
+    proxy_set_header Host $http_host;
+    proxy_max_temp_file_size 0;
+    proxy_pass http://localhost:5000;
+    access_log <%= @appdir %>/tmp/log/nginx.access.log;
+    error_log <%= @appdir %>/tmp/log/nginx.error.log;
+  }
+}

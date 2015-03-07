@@ -1,0 +1,4 @@
+berks-cookbooks/
+.bundle/
+.kitchen/
+.databags_secret_key
