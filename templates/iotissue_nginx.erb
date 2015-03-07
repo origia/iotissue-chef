@@ -3,7 +3,7 @@ server {
   listen   <%= @port || 80 %>;
 
   root <%= @appdir %>;
-  try_files $uri @iotissue_nginx;
+  try_files $uri $uri/index.html @iotissue_nginx;
 
   location @iotissue_nginx {
     proxy_set_header X-Real-IP $remote_addr;
@@ -14,5 +14,18 @@ server {
     proxy_pass http://localhost:5000;
     access_log <%= @appdir %>/tmp/log/nginx.access.log;
     error_log <%= @appdir %>/tmp/log/nginx.error.log;
+  }
+
+  location /ws {
+    proxy_pass http://localhost:5000/ws;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location ^~ /images/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
   }
 }
