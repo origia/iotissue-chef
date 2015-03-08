@@ -5,6 +5,11 @@ server {
   root <%= @appdir %>;
   try_files $uri $uri/index.html @iotissue_nginx;
 
+  client_max_body_size 4m;
+
+  access_log <%= @appdir %>/tmp/log/nginx.access.log;
+  error_log <%= @appdir %>/tmp/log/nginx.error.log;
+
   location @iotissue_nginx {
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -12,8 +17,6 @@ server {
     proxy_set_header Host $http_host;
     proxy_max_temp_file_size 0;
     proxy_pass http://localhost:5000;
-    access_log <%= @appdir %>/tmp/log/nginx.access.log;
-    error_log <%= @appdir %>/tmp/log/nginx.error.log;
   }
 
   location /ws {
